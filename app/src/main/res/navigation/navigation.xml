@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation"
+    app:startDestination="@id/currentShoppingList">
+
+    <fragment
+        android:id="@+id/currentShoppingList"
+        android:name="com.pdstudios.shoppinglistfornetguru.screens.current_shopping_lists.CurrentShoppingList"
+        android:label="CurrentShoppingList"
+        tools:layout="@layout/fragment_current_shopping_list">
+        <action
+            android:id="@+id/action_currentShoppingList_to_archivedShoppingList"
+            app:destination="@id/archivedShoppingList" />
+        <action
+            android:id="@+id/action_currentShoppingList_to_shoppingListDetails"
+            app:destination="@id/shoppingListDetails" />
+    </fragment>
+    <fragment
+        android:id="@+id/archivedShoppingList"
+        android:name="com.pdstudios.shoppinglistfornetguru.screens.archived_shopping_lists.ArchivedShoppingList"
+        android:label="ArchivedShoppingList"
+        tools:layout="@layout/fragment_archived_shopping_list">
+        <action
+            android:id="@+id/action_archivedShoppingList_to_currentShoppingList"
+            app:destination="@id/currentShoppingList" />
+    </fragment>
+    <fragment
+        android:id="@+id/shoppingListDetails"
+        android:name="com.pdstudios.shoppinglistfornetguru.screens.shopping_list_details.ShoppingListDetails"
+        android:label="ShoppingListDetails"
+        tools:layout="@layout/fragment_shopping_list_details">
+        <action
+            android:id="@+id/action_shoppingListDetails_to_currentShoppingList"
+            app:destination="@id/currentShoppingList" />
+    </fragment>
+</navigation>
