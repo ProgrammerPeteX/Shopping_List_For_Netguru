@@ -6,6 +6,8 @@ import androidx.fragment.app.Fragment
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.pdstudios.shoppinglistfornetguru.R
 import com.pdstudios.shoppinglistfornetguru.databinding.FragmentCurrentShoppingListBinding
 
@@ -13,6 +15,9 @@ class CurrentShoppingList : Fragment() {
 
     private lateinit var binding: FragmentCurrentShoppingListBinding
     private lateinit var viewModel: CurrentViewModel
+
+    private lateinit var layoutManager: RecyclerView.LayoutManager
+    private lateinit var adapter: RecyclerView.Adapter<CurrentRecyclerAdapter.ViewHolder>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -29,6 +34,12 @@ class CurrentShoppingList : Fragment() {
 
         //menu
         setHasOptionsMenu(true)
+
+        //recyclerView
+        layoutManager = LinearLayoutManager(this.context)
+        binding.recyclerViewCurrent.layoutManager = layoutManager
+        adapter = CurrentRecyclerAdapter()
+        binding.recyclerViewCurrent.adapter = adapter
 
         return binding.root
     }

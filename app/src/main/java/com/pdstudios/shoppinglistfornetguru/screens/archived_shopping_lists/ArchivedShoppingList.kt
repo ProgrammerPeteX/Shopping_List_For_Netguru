@@ -2,18 +2,24 @@ package com.pdstudios.shoppinglistfornetguru.screens.archived_shopping_lists
 
 import android.os.Bundle
 import android.view.*
+import android.widget.Adapter
 import androidx.fragment.app.Fragment
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.pdstudios.shoppinglistfornetguru.R
 import com.pdstudios.shoppinglistfornetguru.databinding.FragmentArchivedShoppingListBinding
+import com.pdstudios.shoppinglistfornetguru.screens.current_shopping_lists.CurrentRecyclerAdapter
 
 
 class ArchivedShoppingList : Fragment() {
 
     private lateinit var binding: FragmentArchivedShoppingListBinding
     private lateinit var viewModel: ArchivedViewModel
+    private lateinit var layoutManager: RecyclerView.LayoutManager
+    private lateinit var adapter: RecyclerView.Adapter<ArchivedRecyclerAdapter.ViewHolder>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -30,6 +36,12 @@ class ArchivedShoppingList : Fragment() {
 
         //menu
         setHasOptionsMenu(true)
+
+        //recyclerView
+        layoutManager = LinearLayoutManager(this.context)
+        binding.recyclerViewArchived.layoutManager = layoutManager
+        adapter = ArchivedRecyclerAdapter()
+        binding.recyclerViewArchived.adapter = adapter
 
         return binding.root
     }

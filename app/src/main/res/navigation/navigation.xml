@@ -25,6 +25,9 @@
         <action
             android:id="@+id/action_archivedShoppingList_to_currentShoppingList"
             app:destination="@id/currentShoppingList" />
+        <action
+            android:id="@+id/action_archivedShoppingList_to_shoppingListDetails"
+            app:destination="@id/shoppingListDetails" />
     </fragment>
     <fragment
         android:id="@+id/shoppingListDetails"
@@ -34,5 +37,8 @@
         <action
             android:id="@+id/action_shoppingListDetails_to_currentShoppingList"
             app:destination="@id/currentShoppingList" />
+        <action
+            android:id="@+id/action_shoppingListDetails_to_archivedShoppingList"
+            app:destination="@id/archivedShoppingList" />
     </fragment>
 </navigation>
