@@ -3,14 +3,17 @@ package com.pdstudios.shoppinglistfornetguru.screens.current_shopping_lists
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.pdstudios.shoppinglistfornetguru.databinding.ShoppingListCardBinding
 
-class CurrentRecyclerAdapter:
+class CurrentRecyclerAdapter(
+    private var list: LiveData<MutableList<Int>>
+):
     RecyclerView.Adapter<CurrentRecyclerAdapter.ViewHolder>(){
 
-    var list = mutableListOf(1,2,3,4,5,6,7,8,9,112)
     private lateinit var binding: ShoppingListCardBinding
 
     override fun onCreateViewHolder(
@@ -23,14 +26,14 @@ class CurrentRecyclerAdapter:
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.shoppingListName.text = "Shopping List ${list[position]}"
+        holder.shoppingListName.text = "Shopping List ${list.value!![position]}"
         holder.cardView.setOnClickListener { view ->
             navigateToDetails(view)
         }
     }
 
     override fun getItemCount(): Int {
-        return list.size
+        return list.value!!.size
     }
 
     inner class ViewHolder(itemView: View):

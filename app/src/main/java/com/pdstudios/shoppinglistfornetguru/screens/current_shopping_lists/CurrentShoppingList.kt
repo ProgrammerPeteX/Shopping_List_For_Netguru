@@ -2,8 +2,8 @@ package com.pdstudios.shoppinglistfornetguru.screens.current_shopping_lists
 
 import android.os.Bundle
 import android.view.*
-import androidx.fragment.app.Fragment
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -38,11 +38,18 @@ class CurrentShoppingList : Fragment() {
         //recyclerView
         layoutManager = LinearLayoutManager(this.context)
         binding.recyclerViewCurrent.layoutManager = layoutManager
-        adapter = CurrentRecyclerAdapter()
+        adapter = CurrentRecyclerAdapter(viewModel.shoppingLists)
         binding.recyclerViewCurrent.adapter = adapter
 
+        //observers
+        viewModel.notifyAdapater.observe(viewLifecycleOwner) {
+            it?.let {
+                adapter.notifyDataSetChanged()
+            }
+        }
         return binding.root
     }
+
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.archived_shopping_lists, menu)

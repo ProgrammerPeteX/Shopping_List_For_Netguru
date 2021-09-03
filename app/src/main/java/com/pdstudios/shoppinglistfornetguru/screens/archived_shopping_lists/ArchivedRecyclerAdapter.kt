@@ -10,7 +10,7 @@ import com.pdstudios.shoppinglistfornetguru.databinding.ShoppingListCardBinding
 class ArchivedRecyclerAdapter: RecyclerView.Adapter<ArchivedRecyclerAdapter.ViewHolder>() {
 
     private lateinit var binding: ShoppingListCardBinding
-    var list = mutableListOf(1,2,3,4,5,6,7,8,9,112)
+    var list = mutableListOf(1,2,3,4,5,6,7,8,9,112,233,434,654,457,8786,6786,678,867867,44,5,64,46,2)
 
     override fun onCreateViewHolder(
         parent: ViewGroup,

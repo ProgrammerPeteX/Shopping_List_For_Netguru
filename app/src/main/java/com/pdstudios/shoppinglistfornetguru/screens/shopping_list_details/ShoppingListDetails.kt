@@ -7,6 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.pdstudios.shoppinglistfornetguru.R
@@ -37,6 +39,8 @@ class ShoppingListDetails : Fragment() {
         binding.recyclerViewDetails.layoutManager = layoutManager
         adapter = DetailsRecyclerAdapter()
         binding.recyclerViewDetails.adapter = adapter
+
+
 
         return binding.root
     }

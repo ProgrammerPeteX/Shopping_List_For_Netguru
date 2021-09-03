@@ -12,7 +12,7 @@ class DetailsRecyclerAdapter:
     RecyclerView.Adapter<DetailsRecyclerAdapter.ViewHolder>() {
 
     var isArchived = false
-    var list = mutableListOf(1,2,3,4,5,6,7,8,9,112)
+    var list = mutableListOf(1,2,3,4,5,6,7,8,9,112,233,434,654,457,8786,6786,678,867867,44,5,64,46,2)
     private lateinit var binding: ShoppingListCardBinding
 
     override fun onCreateViewHolder(
@@ -27,17 +27,17 @@ class DetailsRecyclerAdapter:
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.shoppingListName.text = "Item ${list[position]}"
         holder.cardView.setOnClickListener { view ->
-            navigateBack(view, isArchived)
+//            navigateBack(view, isArchived)
         }
     }
 
-    private fun navigateBack(view: View, isArchived: Boolean) {
-        val destination = when (isArchived) {
-            true -> ShoppingListDetailsDirections.actionShoppingListDetailsToArchivedShoppingList()
-            false -> ShoppingListDetailsDirections.actionShoppingListDetailsToCurrentShoppingList()
-        }
-        view.findNavController().navigate(destination)
-    }
+//    private fun navigateBack(view: View, isArchived: Boolean) {
+//        val destination = when (isArchived) {
+//            true -> ShoppingListDetailsDirections.actionShoppingListDetailsToArchivedShoppingList()
+//            false -> ShoppingListDetailsDirections.actionShoppingListDetailsToCurrentShoppingList()
+//        }
+//        view.findNavController().navigate(destination)
+//    }
 
     override fun getItemCount(): Int {
         return list.size
