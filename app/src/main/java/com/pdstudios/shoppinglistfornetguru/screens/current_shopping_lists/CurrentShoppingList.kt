@@ -42,7 +42,7 @@ class CurrentShoppingList : Fragment() {
         binding.recyclerViewCurrent.adapter = adapter
 
         //observers
-        viewModel.notifyAdapater.observe(viewLifecycleOwner) {
+        viewModel.notifyAdapter.observe(viewLifecycleOwner) {
             it?.let {
                 adapter.notifyDataSetChanged()
             }

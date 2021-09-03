@@ -25,7 +25,7 @@ class DetailsRecyclerAdapter:
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.shoppingListName.text = "Item ${list[position]}"
+        holder.shoppingListName.setText("Item ${list[position]}")
         holder.cardView.setOnClickListener { view ->
 //            navigateBack(view, isArchived)
         }
@@ -44,7 +44,7 @@ class DetailsRecyclerAdapter:
     }
 
     inner class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
-        var shoppingListName = binding.textViewShoppingListName
+        var shoppingListName = binding.editTextShoppingListName
         var cardView = binding.cardView
     }
 }

@@ -22,7 +22,7 @@ class ArchivedRecyclerAdapter: RecyclerView.Adapter<ArchivedRecyclerAdapter.View
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.shoppingListName.text = "Archived List ${list[position]}"
+        holder.shoppingListName.setText("Archived List ${list[position]}")
         holder.cardView.setOnClickListener { view ->
             navigateToDetails(view)
         }
@@ -33,7 +33,7 @@ class ArchivedRecyclerAdapter: RecyclerView.Adapter<ArchivedRecyclerAdapter.View
     }
 
     inner class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
-        var shoppingListName = binding.textViewShoppingListName
+        var shoppingListName = binding.editTextShoppingListName
         var cardView = binding.cardView
     }
 
