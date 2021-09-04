@@ -6,6 +6,9 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.ItemTouchHelper.LEFT
+import androidx.recyclerview.widget.ItemTouchHelper.RIGHT
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.pdstudios.shoppinglistfornetguru.R
@@ -40,6 +43,34 @@ class CurrentShoppingList : Fragment() {
         binding.recyclerViewCurrent.layoutManager = layoutManager
         adapter = CurrentRecyclerAdapter(viewModel.shoppingLists)
         binding.recyclerViewCurrent.adapter = adapter
+
+        val itemTouchHelperCallback =
+            object :
+                ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
+                override fun onMove(
+                    recyclerView: RecyclerView,
+                    viewHolder: RecyclerView.ViewHolder,
+                    target: RecyclerView.ViewHolder
+                ): Boolean {
+
+                    return false
+                }
+
+                override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                    when (direction) {
+                        LEFT -> {//DELETE
+                            viewModel.shoppingLists.value?.removeAt(viewHolder.adapterPosition)
+                            adapter.notifyDataSetChanged()
+                        }
+                        RIGHT -> {//ARCHIVED
+
+                        }
+                    }
+                }
+
+            }
+        val itemTouchHelper = ItemTouchHelper(itemTouchHelperCallback)
+        itemTouchHelper.attachToRecyclerView(binding.recyclerViewCurrent)
 
         //observers
         viewModel.notifyAdapter.observe(viewLifecycleOwner) {
