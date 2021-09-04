@@ -7,11 +7,12 @@ import androidx.fragment.app.Fragment
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.ItemTouchHelper.LEFT
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.pdstudios.shoppinglistfornetguru.R
 import com.pdstudios.shoppinglistfornetguru.databinding.FragmentArchivedShoppingListBinding
-import com.pdstudios.shoppinglistfornetguru.screens.current_shopping_lists.CurrentRecyclerAdapter
 
 
 class ArchivedShoppingList : Fragment() {
@@ -40,8 +41,32 @@ class ArchivedShoppingList : Fragment() {
         //recyclerView
         layoutManager = LinearLayoutManager(this.context)
         binding.recyclerViewArchived.layoutManager = layoutManager
-        adapter = ArchivedRecyclerAdapter()
+        adapter = ArchivedRecyclerAdapter(viewModel.shoppingLists)
         binding.recyclerViewArchived.adapter = adapter
+
+        val itemTouchHelperCallback =
+            object :
+                ItemTouchHelper.SimpleCallback(0, LEFT) {
+                override fun onMove(
+                    recyclerView: RecyclerView,
+                    viewHolder: RecyclerView.ViewHolder,
+                    target: RecyclerView.ViewHolder
+                ): Boolean {
+
+                    return false
+                }
+
+                override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                    when (direction) {
+                        LEFT -> {//DELETE
+                            viewModel.shoppingLists.value?.removeAt(viewHolder.adapterPosition)
+                            adapter.notifyDataSetChanged()
+                        }
+                    }
+                }
+            }
+
+        ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(binding.recyclerViewArchived)
 
         return binding.root
     }

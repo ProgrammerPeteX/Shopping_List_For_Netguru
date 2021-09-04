@@ -31,9 +31,9 @@
     </fragment>
     <fragment
         android:id="@+id/shoppingListDetails"
-        android:name="com.pdstudios.shoppinglistfornetguru.screens.shopping_list_details.ShoppingListDetails"
+        android:name="com.pdstudios.shoppinglistfornetguru.screens.shopping_list_details.DetailsShoppingList"
         android:label="ShoppingListDetails"
-        tools:layout="@layout/fragment_shopping_list_details">
+        tools:layout="@layout/fragment_details_shopping_list">
         <action
             android:id="@+id/action_shoppingListDetails_to_currentShoppingList"
             app:destination="@id/currentShoppingList" />

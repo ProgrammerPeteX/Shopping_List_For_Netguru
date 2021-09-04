@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.ItemTouchHelper.RIGHT
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.pdstudios.shoppinglistfornetguru.R
+import com.pdstudios.shoppinglistfornetguru.database.ShoppingDatabase
 import com.pdstudios.shoppinglistfornetguru.databinding.FragmentCurrentShoppingListBinding
 
 class CurrentShoppingList : Fragment() {
@@ -30,10 +31,16 @@ class CurrentShoppingList : Fragment() {
         binding = DataBindingUtil.inflate(
             inflater,R.layout.fragment_current_shopping_list,container,false)
 
+        //database
+        val application = requireNotNull(this.activity).application
+        val shoppingDatabase = ShoppingDatabase.getInstance(application)
+
         //viewModel
-        viewModel = ViewModelProvider(this).get(CurrentViewModel::class.java)
+        val factory = CurrentViewModelFactory(shoppingDatabase, application)
+        viewModel = ViewModelProvider(this, factory).get(CurrentViewModel::class.java)
         binding.currentViewModel = viewModel
         binding.lifecycleOwner = this
+
 
         //menu
         setHasOptionsMenu(true)
@@ -46,7 +53,7 @@ class CurrentShoppingList : Fragment() {
 
         val itemTouchHelperCallback =
             object :
-                ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
+                ItemTouchHelper.SimpleCallback(0, LEFT or RIGHT) {
                 override fun onMove(
                     recyclerView: RecyclerView,
                     viewHolder: RecyclerView.ViewHolder,
@@ -63,14 +70,14 @@ class CurrentShoppingList : Fragment() {
                             adapter.notifyDataSetChanged()
                         }
                         RIGHT -> {//ARCHIVED
-
+                            adapter.notifyDataSetChanged()
                         }
                     }
                 }
 
             }
-        val itemTouchHelper = ItemTouchHelper(itemTouchHelperCallback)
-        itemTouchHelper.attachToRecyclerView(binding.recyclerViewCurrent)
+
+        ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(binding.recyclerViewCurrent)
 
         //observers
         viewModel.notifyAdapter.observe(viewLifecycleOwner) {

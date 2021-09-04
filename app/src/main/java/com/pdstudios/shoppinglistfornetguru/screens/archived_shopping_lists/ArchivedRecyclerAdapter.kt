@@ -1,16 +1,22 @@
 package com.pdstudios.shoppinglistfornetguru.screens.archived_shopping_lists
 
+import android.text.InputType
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.LiveData
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.pdstudios.shoppinglistfornetguru.databinding.ShoppingListCardBinding
+import com.pdstudios.shoppinglistfornetguru.screens.current_shopping_lists.CurrentShoppingListDirections
 
-class ArchivedRecyclerAdapter: RecyclerView.Adapter<ArchivedRecyclerAdapter.ViewHolder>() {
+class ArchivedRecyclerAdapter(
+    private var list: LiveData<MutableList<String>>
+): RecyclerView.Adapter<ArchivedRecyclerAdapter.ViewHolder>() {
 
     private lateinit var binding: ShoppingListCardBinding
-    var list = mutableListOf(1,2,3,4,5,6,7,8,9,112,233,434,654,457,8786,6786,678,867867,44,5,64,46,2)
+    private var isLongClick = false
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -22,18 +28,44 @@ class ArchivedRecyclerAdapter: RecyclerView.Adapter<ArchivedRecyclerAdapter.View
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.shoppingListName.setText("Archived List ${list[position]}")
+        holder.shoppingListName.text = list.value!![position]
+
         holder.cardView.setOnClickListener { view ->
-            navigateToDetails(view)
+            if (!isLongClick) navigateToDetails(view)
+        }
+
+        holder.cardView.setOnLongClickListener {
+            isLongClick = true
+            holder.shoppingListName.visibility = View.GONE
+            holder.editShoppingListName.visibility = View.VISIBLE
+            holder.shoppingListName.inputType = InputType.TYPE_CLASS_TEXT
+            holder.editShoppingListName.setText(list.value!![position])
+            true
+        }
+
+        holder.editShoppingListName.setOnKeyListener { view, keyCode, keyEvent ->
+            var bool = false
+            if (keyEvent.action == KeyEvent.ACTION_DOWN &&
+                keyCode == KeyEvent.KEYCODE_ENTER) {
+                isLongClick = false
+                holder.editShoppingListName.visibility = View.GONE
+                holder.shoppingListName.visibility = View.VISIBLE
+                list.value!![position] = holder.editShoppingListName.text.toString()
+                holder.shoppingListName.text = holder.editShoppingListName.text
+                bool = true
+            }
+            bool
         }
     }
 
     override fun getItemCount(): Int {
-        return list.size
+        return list.value!!.size
     }
 
-    inner class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
-        var shoppingListName = binding.editTextShoppingListName
+    inner class ViewHolder(itemView: View):
+        RecyclerView.ViewHolder(itemView) {
+        var shoppingListName = binding.textViewShoppingListName
+        var editShoppingListName = binding.editTextShoppingListName
         var cardView = binding.cardView
     }
 

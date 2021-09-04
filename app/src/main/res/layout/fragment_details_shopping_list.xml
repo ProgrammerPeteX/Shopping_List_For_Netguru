@@ -12,7 +12,25 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".screens.shopping_list_details.ShoppingListDetails">
+        tools:context=".screens.shopping_list_details.DetailsShoppingList">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/button_addItem"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/round_button"
+            android:gravity="center"
+            android:includeFontPadding="false"
+            android:onClick="@{()->detailsViewModel.onAddItem()}"
+            android:text="@string/_plus"
+            android:textColor="@color/white"
+            android:textSize="40sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.903"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.952" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerViewDetails"
