@@ -19,13 +19,13 @@ interface ShoppingListsDao {
     fun getShoppingList(listID: Long): ShoppingListsForm
 
     @Query("SELECT * FROM shopping_lists_table ORDER BY listID")
-    fun getAllShoppingLists(): LiveData<MutableList<ShoppingListsForm>>
-
-    @Query("SELECT * FROM shopping_lists_table WHERE isArchived = 1 ORDER BY listID")
-    fun getCurrentShoppingLists(): LiveData<MutableList<ShoppingListsForm>>
+    fun getAllShoppingLists(): LiveData<List<ShoppingListsForm>>
 
     @Query("SELECT * FROM shopping_lists_table WHERE isArchived = 0 ORDER BY listID")
-    fun getArchivedShoppingLists(): LiveData<MutableList<ShoppingListsForm>>
+    fun getCurrentShoppingLists(): LiveData<List<ShoppingListsForm>>
+
+    @Query("SELECT * FROM shopping_lists_table WHERE isArchived = 1 ORDER BY listID")
+    fun getArchivedShoppingLists(): LiveData<List<ShoppingListsForm>>
 
     @Query("DELETE FROM shopping_lists_table WHERE listID =:listID")
     fun deleteFromShoppingLists(listID: Long)

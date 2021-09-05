@@ -1,6 +1,7 @@
 package com.pdstudios.shoppinglistfornetguru.screens.current_shopping_lists
 
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -13,9 +14,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.pdstudios.shoppinglistfornetguru.R
 import com.pdstudios.shoppinglistfornetguru.database.ShoppingDatabase
+import com.pdstudios.shoppinglistfornetguru.database.shopping_list.ShoppingListsForm
 import com.pdstudios.shoppinglistfornetguru.databinding.FragmentCurrentShoppingListBinding
 
-class CurrentShoppingList : Fragment() {
+class CurrentShoppingList : Fragment(), CurrentRecyclerAdapter.AdapterListener {
 
     private lateinit var binding: FragmentCurrentShoppingListBinding
     private lateinit var viewModel: CurrentViewModel
@@ -25,8 +27,7 @@ class CurrentShoppingList : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+        savedInstanceState: Bundle?): View {
         //binding
         binding = DataBindingUtil.inflate(
             inflater,R.layout.fragment_current_shopping_list,container,false)
@@ -36,7 +37,7 @@ class CurrentShoppingList : Fragment() {
         val shoppingDatabase = ShoppingDatabase.getInstance(application)
 
         //viewModel
-        val factory = CurrentViewModelFactory(shoppingDatabase, application)
+        val factory = CurrentViewModelFactory(shoppingDatabase, application )
         viewModel = ViewModelProvider(this, factory).get(CurrentViewModel::class.java)
         binding.currentViewModel = viewModel
         binding.lifecycleOwner = this
@@ -48,8 +49,15 @@ class CurrentShoppingList : Fragment() {
         //recyclerView
         layoutManager = LinearLayoutManager(this.context)
         binding.recyclerViewCurrent.layoutManager = layoutManager
-        adapter = CurrentRecyclerAdapter(viewModel.shoppingLists)
+        adapter = CurrentRecyclerAdapter(viewModel.shoppingLists, this)
         binding.recyclerViewCurrent.adapter = adapter
+
+
+
+        viewModel.shoppingLists.observe(viewLifecycleOwner) {
+            adapter.notifyDataSetChanged()
+            Log.i("test", "hi, this is the  shoppingLists Observer :)")
+        }
 
         val itemTouchHelperCallback =
             object :
@@ -64,17 +72,21 @@ class CurrentShoppingList : Fragment() {
                 }
 
                 override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                    val shoppingList = viewModel.shoppingLists.value!![viewHolder.adapterPosition]
                     when (direction) {
                         LEFT -> {//DELETE
-                            viewModel.shoppingLists.value?.removeAt(viewHolder.adapterPosition)
+//                            viewModel.shoppingLists.value?.removeAt(viewHolder.adapterPosition)
+                            val listID = shoppingList.listID
+                            viewModel.deleteFromShoppingLists(listID)
                             adapter.notifyDataSetChanged()
                         }
                         RIGHT -> {//ARCHIVED
+                            shoppingList.isArchived = true
+                            updateShoppingList(shoppingList)
                             adapter.notifyDataSetChanged()
                         }
                     }
                 }
-
             }
 
         ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(binding.recyclerViewCurrent)
@@ -88,6 +100,9 @@ class CurrentShoppingList : Fragment() {
         return binding.root
     }
 
+    override fun updateShoppingList(shoppingLists: ShoppingListsForm) {
+        viewModel.updateShoppingLists(shoppingLists)
+    }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.archived_shopping_lists, menu)
@@ -105,5 +120,4 @@ class CurrentShoppingList : Fragment() {
         this.findNavController().navigate(CurrentShoppingListDirections
             .actionCurrentShoppingListToArchivedShoppingList())
     }
-
 }

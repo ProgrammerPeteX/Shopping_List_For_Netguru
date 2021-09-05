@@ -2,7 +2,6 @@ package com.pdstudios.shoppinglistfornetguru.screens.archived_shopping_lists
 
 import android.os.Bundle
 import android.view.*
-import android.widget.Adapter
 import androidx.fragment.app.Fragment
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
@@ -12,10 +11,12 @@ import androidx.recyclerview.widget.ItemTouchHelper.LEFT
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.pdstudios.shoppinglistfornetguru.R
+import com.pdstudios.shoppinglistfornetguru.database.ShoppingDatabase
+import com.pdstudios.shoppinglistfornetguru.database.shopping_list.ShoppingListsForm
 import com.pdstudios.shoppinglistfornetguru.databinding.FragmentArchivedShoppingListBinding
 
 
-class ArchivedShoppingList : Fragment() {
+class ArchivedShoppingList : Fragment(), ArchivedRecyclerAdapter.AdapterListener {
 
     private lateinit var binding: FragmentArchivedShoppingListBinding
     private lateinit var viewModel: ArchivedViewModel
@@ -30,8 +31,13 @@ class ArchivedShoppingList : Fragment() {
         binding = DataBindingUtil.inflate(
             inflater,R.layout.fragment_archived_shopping_list, container, false)
 
+        //database
+        val application = requireNotNull(this.activity).application
+        val shoppingListsDao = ShoppingDatabase.getInstance(application).shoppingListsDao
+
         //viewModel
-        viewModel = ViewModelProvider(this).get(ArchivedViewModel::class.java)
+        val factory = ArchivedViewModelFactory(shoppingListsDao, application)
+        viewModel = ViewModelProvider(this, factory).get(ArchivedViewModel::class.java)
         binding.archivedViewModel = viewModel
         binding.lifecycleOwner = this
 
@@ -41,7 +47,7 @@ class ArchivedShoppingList : Fragment() {
         //recyclerView
         layoutManager = LinearLayoutManager(this.context)
         binding.recyclerViewArchived.layoutManager = layoutManager
-        adapter = ArchivedRecyclerAdapter(viewModel.shoppingLists)
+        adapter = ArchivedRecyclerAdapter(viewModel.shoppingLists, this)
         binding.recyclerViewArchived.adapter = adapter
 
         val itemTouchHelperCallback =
@@ -59,7 +65,7 @@ class ArchivedShoppingList : Fragment() {
                 override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                     when (direction) {
                         LEFT -> {//DELETE
-                            viewModel.shoppingLists.value?.removeAt(viewHolder.adapterPosition)
+//                            viewModel.shoppingLists.value?.removeAt(viewHolder.adapterPosition)
                             adapter.notifyDataSetChanged()
                         }
                     }
@@ -69,6 +75,10 @@ class ArchivedShoppingList : Fragment() {
         ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(binding.recyclerViewArchived)
 
         return binding.root
+    }
+
+    override fun updateShoppingList(shoppingList: ShoppingListsForm) {
+        viewModel.updateShoppingList(shoppingList)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

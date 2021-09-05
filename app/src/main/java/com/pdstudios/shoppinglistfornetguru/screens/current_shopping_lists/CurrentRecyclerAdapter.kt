@@ -8,13 +8,14 @@ import android.view.ViewGroup
 import androidx.lifecycle.LiveData
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.pdstudios.shoppinglistfornetguru.database.shopping_list.ShoppingListsDao
 import com.pdstudios.shoppinglistfornetguru.database.shopping_list.ShoppingListsForm
 import com.pdstudios.shoppinglistfornetguru.databinding.ShoppingListCardBinding
 
 open class CurrentRecyclerAdapter(
-    private var list: LiveData<MutableList<ShoppingListsForm>>
-):
-    RecyclerView.Adapter<CurrentRecyclerAdapter.ViewHolder>(){
+    private var list: LiveData<List<ShoppingListsForm>>,
+    private val adapterListener: AdapterListener
+): RecyclerView.Adapter<CurrentRecyclerAdapter.ViewHolder>(){
 
     private lateinit var binding: ShoppingListCardBinding
     private var isLongClick = false
@@ -45,6 +46,7 @@ open class CurrentRecyclerAdapter(
         }
 
         holder.editShoppingListName.setOnKeyListener { view, keyCode, keyEvent ->
+
             var bool = false
             if (keyEvent.action == KeyEvent.ACTION_DOWN &&
                     keyCode == KeyEvent.KEYCODE_ENTER) {
@@ -52,6 +54,11 @@ open class CurrentRecyclerAdapter(
                 holder.editShoppingListName.visibility = View.GONE
                 holder.shoppingListName.visibility = View.VISIBLE
                 list.value!![position].name = holder.editShoppingListName.text.toString()
+
+//                shoppingListsDao.updateShoppingList(list.value!![position])
+//                updateShoppingLists(position)
+                val shoppingList = list.value!![position]
+                adapterListener.updateShoppingList(shoppingList)
                 holder.shoppingListName.text = holder.editShoppingListName.text
                 bool = true
             }
@@ -59,8 +66,10 @@ open class CurrentRecyclerAdapter(
         }
     }
 
+
+
     override fun getItemCount(): Int {
-        return list.value!!.size
+        return list.value?.size ?: 0
     }
 
     inner class ViewHolder(itemView: View):
@@ -73,5 +82,9 @@ open class CurrentRecyclerAdapter(
     private fun navigateToDetails(view: View) {
         view.findNavController().navigate(CurrentShoppingListDirections
             .actionCurrentShoppingListToShoppingListDetails())
+    }
+
+    interface AdapterListener {
+        fun updateShoppingList(shoppingLists: ShoppingListsForm)
     }
 }

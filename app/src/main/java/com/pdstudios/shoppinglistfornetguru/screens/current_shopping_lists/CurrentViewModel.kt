@@ -1,31 +1,27 @@
 package com.pdstudios.shoppinglistfornetguru.screens.current_shopping_lists
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.pdstudios.shoppinglistfornetguru.database.ShoppingDatabase
-import com.pdstudios.shoppinglistfornetguru.database.shopping_list.ShoppingListsDao
 import com.pdstudios.shoppinglistfornetguru.database.shopping_list.ShoppingListsForm
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class CurrentViewModel(shoppingDatabase: ShoppingDatabase, application: Application)
+class CurrentViewModel(
+    shoppingDatabase: ShoppingDatabase,
+    application: Application)
     : AndroidViewModel(application) {
 
     private val shoppingListsDao = shoppingDatabase.shoppingListsDao
-    private val detailsDao= shoppingDatabase.detailsDao
 
     var finished = MutableLiveData<Boolean>()
 
-    private var _shoppingLists: MutableLiveData<MutableList<ShoppingListsForm>>
-    = MutableLiveData(mutableListOf())
+    val shoppingLists = shoppingListsDao.getCurrentShoppingLists()
 
-    val shoppingLists: LiveData<MutableList<ShoppingListsForm>>
-        get() = _shoppingLists
 
     var notifyAdapter = MutableLiveData<Boolean>()
 
@@ -42,7 +38,6 @@ class CurrentViewModel(shoppingDatabase: ShoppingDatabase, application: Applicat
 
             val shoppingList = ShoppingListsForm()
             insertShoppingList(shoppingList)
-            _shoppingLists.value = initialiseShoppingList()
             finished.value = true
         }
     }
@@ -53,12 +48,38 @@ class CurrentViewModel(shoppingDatabase: ShoppingDatabase, application: Applicat
         }
     }
 
-    private suspend fun initialiseShoppingList(): MutableList<ShoppingListsForm>? {
+    private suspend fun initialiseShoppingList(): LiveData<List<ShoppingListsForm>> {
         return withContext(Dispatchers.IO) {
-            shoppingListsDao.getArchivedShoppingLists().value
+            shoppingListsDao.getAllShoppingLists()
         }
     }
 
+    fun onTestClick() {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                shoppingListsDao.clearShoppingLists()
+            }
+        }
+    }
 
+    fun deleteFromShoppingLists(listID: Long) {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                shoppingListsDao.deleteFromShoppingLists(listID)
+            }
+        }
+    }
+
+    fun updateShoppingLists(shoppingLists: ShoppingListsForm) {
+        viewModelScope.launch {
+            updateShoppingListsSuspend(shoppingLists)
+        }
+    }
+
+    private suspend fun updateShoppingListsSuspend(shoppingLists: ShoppingListsForm) {
+        withContext(Dispatchers.IO) {
+            shoppingListsDao.updateShoppingList(shoppingLists)
+        }
+    }
 
 }

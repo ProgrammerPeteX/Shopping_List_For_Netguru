@@ -8,11 +8,13 @@ import android.view.ViewGroup
 import androidx.lifecycle.LiveData
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.pdstudios.shoppinglistfornetguru.database.shopping_list.ShoppingListsForm
 import com.pdstudios.shoppinglistfornetguru.databinding.ShoppingListCardBinding
 import com.pdstudios.shoppinglistfornetguru.screens.current_shopping_lists.CurrentShoppingListDirections
 
 class ArchivedRecyclerAdapter(
-    private var list: LiveData<MutableList<String>>
+    private var list: LiveData<List<ShoppingListsForm>>,
+    private var adapterListener: AdapterListener
 ): RecyclerView.Adapter<ArchivedRecyclerAdapter.ViewHolder>() {
 
     private lateinit var binding: ShoppingListCardBinding
@@ -28,7 +30,7 @@ class ArchivedRecyclerAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.shoppingListName.text = list.value!![position]
+        holder.shoppingListName.text = list.value!![position].name
 
         holder.cardView.setOnClickListener { view ->
             if (!isLongClick) navigateToDetails(view)
@@ -39,7 +41,7 @@ class ArchivedRecyclerAdapter(
             holder.shoppingListName.visibility = View.GONE
             holder.editShoppingListName.visibility = View.VISIBLE
             holder.shoppingListName.inputType = InputType.TYPE_CLASS_TEXT
-            holder.editShoppingListName.setText(list.value!![position])
+            holder.editShoppingListName.setText(list.value!![position].name)
             true
         }
 
@@ -50,7 +52,7 @@ class ArchivedRecyclerAdapter(
                 isLongClick = false
                 holder.editShoppingListName.visibility = View.GONE
                 holder.shoppingListName.visibility = View.VISIBLE
-                list.value!![position] = holder.editShoppingListName.text.toString()
+                list.value!![position].name = holder.editShoppingListName.text.toString()
                 holder.shoppingListName.text = holder.editShoppingListName.text
                 bool = true
             }
@@ -73,6 +75,10 @@ class ArchivedRecyclerAdapter(
         view.findNavController().navigate(
             ArchivedShoppingListDirections
             .actionArchivedShoppingListToShoppingListDetails())
+    }
+
+    interface AdapterListener {
+        fun updateShoppingList(shoppingList: ShoppingListsForm)
     }
 
 }
