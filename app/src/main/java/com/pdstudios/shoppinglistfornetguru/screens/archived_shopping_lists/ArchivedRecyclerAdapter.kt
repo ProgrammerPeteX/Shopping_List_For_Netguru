@@ -13,8 +13,7 @@ import com.pdstudios.shoppinglistfornetguru.databinding.ShoppingListCardBinding
 import com.pdstudios.shoppinglistfornetguru.screens.current_shopping_lists.CurrentShoppingListDirections
 
 class ArchivedRecyclerAdapter(
-    private var list: LiveData<List<ShoppingListsForm>>,
-    private var adapterListener: AdapterListener
+    private var list: LiveData<List<ShoppingListsForm>>
 ): RecyclerView.Adapter<ArchivedRecyclerAdapter.ViewHolder>() {
 
     private lateinit var binding: ShoppingListCardBinding
@@ -35,39 +34,15 @@ class ArchivedRecyclerAdapter(
         holder.cardView.setOnClickListener { view ->
             if (!isLongClick) navigateToDetails(view)
         }
-
-        holder.cardView.setOnLongClickListener {
-            isLongClick = true
-            holder.shoppingListName.visibility = View.GONE
-            holder.editShoppingListName.visibility = View.VISIBLE
-            holder.shoppingListName.inputType = InputType.TYPE_CLASS_TEXT
-            holder.editShoppingListName.setText(list.value!![position].name)
-            true
-        }
-
-        holder.editShoppingListName.setOnKeyListener { view, keyCode, keyEvent ->
-            var bool = false
-            if (keyEvent.action == KeyEvent.ACTION_DOWN &&
-                keyCode == KeyEvent.KEYCODE_ENTER) {
-                isLongClick = false
-                holder.editShoppingListName.visibility = View.GONE
-                holder.shoppingListName.visibility = View.VISIBLE
-                list.value!![position].name = holder.editShoppingListName.text.toString()
-                holder.shoppingListName.text = holder.editShoppingListName.text
-                bool = true
-            }
-            bool
-        }
     }
 
     override fun getItemCount(): Int {
-        return list.value!!.size
+        return list.value?.size ?: 0
     }
 
     inner class ViewHolder(itemView: View):
         RecyclerView.ViewHolder(itemView) {
         var shoppingListName = binding.textViewShoppingListName
-        var editShoppingListName = binding.editTextShoppingListName
         var cardView = binding.cardView
     }
 
@@ -76,10 +51,5 @@ class ArchivedRecyclerAdapter(
             ArchivedShoppingListDirections
             .actionArchivedShoppingListToShoppingListDetails())
     }
-
-    interface AdapterListener {
-        fun updateShoppingList(shoppingList: ShoppingListsForm)
-    }
-
 }
 

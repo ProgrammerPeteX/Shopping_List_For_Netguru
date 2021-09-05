@@ -13,24 +13,25 @@ class ArchivedViewModel(
     private val shoppingListsDao: ShoppingListsDao,
     application: Application
 ): AndroidViewModel(application) {
-
-
     val shoppingLists = shoppingListsDao.getArchivedShoppingLists()
 
-    init {
-
-    }
-
-    fun updateShoppingList(shoppingList: ShoppingListsForm) {
+    fun deleteFromShoppingLists(listID: Long) {
         viewModelScope.launch {
-            update(shoppingList)
+            withContext(Dispatchers.IO) {
+                shoppingListsDao.deleteFromShoppingLists(listID)
+            }
         }
     }
 
-    private suspend fun update(shoppingList: ShoppingListsForm) {
+    fun updateShoppingLists(shoppingLists: ShoppingListsForm) {
+        viewModelScope.launch {
+            updateShoppingListsSuspend(shoppingLists)
+        }
+    }
+
+    private suspend fun updateShoppingListsSuspend(shoppingLists: ShoppingListsForm) {
         withContext(Dispatchers.IO) {
-            shoppingListsDao.updateShoppingList(shoppingList)
+            shoppingListsDao.updateShoppingList(shoppingLists)
         }
     }
-
 }

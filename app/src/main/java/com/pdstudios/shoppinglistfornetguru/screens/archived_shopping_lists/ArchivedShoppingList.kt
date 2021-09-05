@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.ItemTouchHelper.LEFT
+import androidx.recyclerview.widget.ItemTouchHelper.RIGHT
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.pdstudios.shoppinglistfornetguru.R
@@ -16,7 +17,7 @@ import com.pdstudios.shoppinglistfornetguru.database.shopping_list.ShoppingLists
 import com.pdstudios.shoppinglistfornetguru.databinding.FragmentArchivedShoppingListBinding
 
 
-class ArchivedShoppingList : Fragment(), ArchivedRecyclerAdapter.AdapterListener {
+class ArchivedShoppingList : Fragment() {
 
     private lateinit var binding: FragmentArchivedShoppingListBinding
     private lateinit var viewModel: ArchivedViewModel
@@ -47,12 +48,16 @@ class ArchivedShoppingList : Fragment(), ArchivedRecyclerAdapter.AdapterListener
         //recyclerView
         layoutManager = LinearLayoutManager(this.context)
         binding.recyclerViewArchived.layoutManager = layoutManager
-        adapter = ArchivedRecyclerAdapter(viewModel.shoppingLists, this)
+        adapter = ArchivedRecyclerAdapter(viewModel.shoppingLists)
         binding.recyclerViewArchived.adapter = adapter
+
+        viewModel.shoppingLists.observe(viewLifecycleOwner) {
+            adapter.notifyDataSetChanged()
+        }
 
         val itemTouchHelperCallback =
             object :
-                ItemTouchHelper.SimpleCallback(0, LEFT) {
+                ItemTouchHelper.SimpleCallback(0, LEFT or RIGHT) {
                 override fun onMove(
                     recyclerView: RecyclerView,
                     viewHolder: RecyclerView.ViewHolder,
@@ -63,11 +68,17 @@ class ArchivedShoppingList : Fragment(), ArchivedRecyclerAdapter.AdapterListener
                 }
 
                 override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                    val shoppingList = viewModel.shoppingLists.value!![viewHolder.adapterPosition]
                     when (direction) {
                         LEFT -> {//DELETE
-//                            viewModel.shoppingLists.value?.removeAt(viewHolder.adapterPosition)
+                            viewModel.deleteFromShoppingLists(shoppingList.listID)
+                            adapter.notifyDataSetChanged()}
+                        RIGHT -> {//NOT ARCHIVED
+                            shoppingList.isArchived = false
+                            viewModel.updateShoppingLists(shoppingList)
                             adapter.notifyDataSetChanged()
                         }
+
                     }
                 }
             }
@@ -75,10 +86,6 @@ class ArchivedShoppingList : Fragment(), ArchivedRecyclerAdapter.AdapterListener
         ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(binding.recyclerViewArchived)
 
         return binding.root
-    }
-
-    override fun updateShoppingList(shoppingList: ShoppingListsForm) {
-        viewModel.updateShoppingList(shoppingList)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

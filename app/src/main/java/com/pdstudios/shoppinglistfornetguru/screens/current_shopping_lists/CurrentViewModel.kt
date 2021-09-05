@@ -18,39 +18,18 @@ class CurrentViewModel(
 
     private val shoppingListsDao = shoppingDatabase.shoppingListsDao
 
-    var finished = MutableLiveData<Boolean>()
-
     val shoppingLists = shoppingListsDao.getCurrentShoppingLists()
-
-
-    var notifyAdapter = MutableLiveData<Boolean>()
-
-    init {
-
-        notifyAdapter.value = null
-        finished.value = null
-
-    }
 
     fun onAddShoppingList() {
         viewModelScope.launch {
-            notifyAdapter.value = true
-
             val shoppingList = ShoppingListsForm()
             insertShoppingList(shoppingList)
-            finished.value = true
         }
     }
 
     private suspend fun insertShoppingList(shoppingList: ShoppingListsForm) {
         withContext(Dispatchers.IO) {
             shoppingListsDao.insertShoppingList(shoppingList)
-        }
-    }
-
-    private suspend fun initialiseShoppingList(): LiveData<List<ShoppingListsForm>> {
-        return withContext(Dispatchers.IO) {
-            shoppingListsDao.getAllShoppingLists()
         }
     }
 

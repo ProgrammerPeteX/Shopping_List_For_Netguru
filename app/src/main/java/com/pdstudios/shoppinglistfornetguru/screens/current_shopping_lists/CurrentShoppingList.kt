@@ -52,11 +52,9 @@ class CurrentShoppingList : Fragment(), CurrentRecyclerAdapter.AdapterListener {
         adapter = CurrentRecyclerAdapter(viewModel.shoppingLists, this)
         binding.recyclerViewCurrent.adapter = adapter
 
-
-
         viewModel.shoppingLists.observe(viewLifecycleOwner) {
             adapter.notifyDataSetChanged()
-            Log.i("test", "hi, this is the  shoppingLists Observer :)")
+//            Log.i("test", "hi, this is the  shoppingLists Observer :)")
         }
 
         val itemTouchHelperCallback =
@@ -91,12 +89,6 @@ class CurrentShoppingList : Fragment(), CurrentRecyclerAdapter.AdapterListener {
 
         ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(binding.recyclerViewCurrent)
 
-        //observers
-        viewModel.notifyAdapter.observe(viewLifecycleOwner) {
-            it?.let {
-                adapter.notifyDataSetChanged()
-            }
-        }
         return binding.root
     }
 
