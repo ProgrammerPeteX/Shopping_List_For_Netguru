@@ -12,7 +12,7 @@ import com.pdstudios.shoppinglistfornetguru.database.shopping_list.ShoppingLists
 import com.pdstudios.shoppinglistfornetguru.databinding.ShoppingListCardBinding
 
 open class CurrentRecyclerAdapter(
-    private var list: LiveData<List<ShoppingListsForm>>,
+    private var lists: LiveData<List<ShoppingListsForm>>,
     private val adapterListener: CurrentRecyclerAdapter.AdapterListener
 ): RecyclerView.Adapter<CurrentRecyclerAdapter.ViewHolder>(){
 
@@ -29,11 +29,11 @@ open class CurrentRecyclerAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = list.value!![position]
+        val item = lists.value!![position]
         holder.shoppingListName.text = item.name
 
         holder.cardView.setOnClickListener { view ->
-            if (!isLongClick) navigateToDetails(view, item.listID)
+            if (!isLongClick) navigateToItems(view, item.listID)
         }
 
         holder.cardView.setOnLongClickListener {
@@ -41,7 +41,7 @@ open class CurrentRecyclerAdapter(
             holder.shoppingListName.visibility = View.GONE
             holder.editShoppingListName.visibility = View.VISIBLE
             holder.shoppingListName.inputType = InputType.TYPE_CLASS_TEXT
-            holder.editShoppingListName.setText(list.value!![position].name)
+            holder.editShoppingListName.setText(lists.value!![position].name)
             true
         }
 
@@ -62,7 +62,7 @@ open class CurrentRecyclerAdapter(
     }
 
     override fun getItemCount(): Int {
-        return list.value?.size ?: 0
+        return lists.value?.size ?: 0
     }
 
     inner class ViewHolder(itemView: View):
@@ -72,12 +72,12 @@ open class CurrentRecyclerAdapter(
             var cardView = binding.cardView
         }
 
-    private fun navigateToDetails(view: View, listID: Long) {
+    private fun navigateToItems(view: View, listID: Long) {
         view.findNavController().navigate(CurrentShoppingListDirections
-            .actionCurrentShoppingListToShoppingListDetails(listID))
+            .actionCurrentShoppingListToShoppingListItems(listID))
     }
 
     interface AdapterListener {
-        fun updateShoppingList(shoppingList: ShoppingListsForm)
+        fun updateShoppingList(shoppingLists: ShoppingListsForm)
     }
 }

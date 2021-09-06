@@ -11,7 +11,7 @@ data class ShoppingListsForm(
     var listID: Long = 0L,
 
     @ColumnInfo
-    var name: String = "New Shopping List details $listID",
+    var name: String = "SHOPPING LIST",
 
     @ColumnInfo
     var isArchived: Boolean = false,

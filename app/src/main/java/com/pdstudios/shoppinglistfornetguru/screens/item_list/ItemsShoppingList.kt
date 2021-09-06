@@ -1,4 +1,4 @@
-package com.pdstudios.shoppinglistfornetguru.screens.shopping_list_details
+package com.pdstudios.shoppinglistfornetguru.screens.item_list
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -12,15 +12,15 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.pdstudios.shoppinglistfornetguru.R
 import com.pdstudios.shoppinglistfornetguru.database.ShoppingDatabase
-import com.pdstudios.shoppinglistfornetguru.database.details.DetailsForm
-import com.pdstudios.shoppinglistfornetguru.databinding.FragmentDetailsShoppingListBinding
+import com.pdstudios.shoppinglistfornetguru.database.item.ItemForm
+import com.pdstudios.shoppinglistfornetguru.databinding.FragmentItemsShoppingListBinding
 
-class DetailsShoppingList : Fragment(), DetailsRecyclerAdapter.AdapterListener {
+class ItemsShoppingList : Fragment(), ItemsRecyclerAdapter.AdapterListener {
 
-    private lateinit var binding: FragmentDetailsShoppingListBinding
-    private lateinit var viewModel: DetailsViewModel
+    private lateinit var binding: FragmentItemsShoppingListBinding
+    private lateinit var viewModel: ItemsViewModel
     private lateinit var layoutManager: RecyclerView.LayoutManager
-    private lateinit var adapter: RecyclerView.Adapter<DetailsRecyclerAdapter.ViewHolder>
+    private lateinit var adapter: RecyclerView.Adapter<ItemsRecyclerAdapter.ViewHolder>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -28,29 +28,29 @@ class DetailsShoppingList : Fragment(), DetailsRecyclerAdapter.AdapterListener {
     ): View? {
         //binging
         binding = DataBindingUtil.inflate(
-            inflater, R.layout.fragment_details_shopping_list, container, false)
+            inflater, R.layout.fragment_items_shopping_list, container, false)
 
         //args
-        var args = DetailsShoppingListArgs.fromBundle(requireArguments())
+        var args = ItemsShoppingListArgs.fromBundle(requireArguments())
 
         //database
         val application = requireNotNull(this.activity).application
         val database = ShoppingDatabase.getInstance(application)
 
         //viewModel
-        val factory = DetailsViewModelFactory(database, application, args.listID)
-        viewModel = ViewModelProvider(this, factory).get(DetailsViewModel::class.java)
-        binding.detailsViewModel = viewModel
+        val factory = ItemsViewModelFactory(database, application, args.listID)
+        viewModel = ViewModelProvider(this, factory).get(ItemsViewModel::class.java)
+        binding.itemsViewModel = viewModel
         binding.lifecycleOwner = this
 
         //recyclerView
-        val shoppingList = viewModel.shoppingList
+        val shoppingList = viewModel.shoppingLists
         layoutManager = LinearLayoutManager(this.context)
-        binding.recyclerViewDetails.layoutManager = layoutManager
-        adapter = DetailsRecyclerAdapter(viewModel.itemList, shoppingList, this)
-        binding.recyclerViewDetails.adapter = adapter
+        binding.recyclerViewItems.layoutManager = layoutManager
+        adapter = ItemsRecyclerAdapter(viewModel.itemList, shoppingList, this)
+        binding.recyclerViewItems.adapter = adapter
 
-        viewModel.shoppingList.observe(viewLifecycleOwner) { list ->
+        viewModel.shoppingLists.observe(viewLifecycleOwner) { list ->
             adapter.notifyDataSetChanged()
             if (!list.isArchived) {
                 val itemTouchHelperCallback =
@@ -76,7 +76,7 @@ class DetailsShoppingList : Fragment(), DetailsRecyclerAdapter.AdapterListener {
                         }
                     }
 
-                ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(binding.recyclerViewDetails)
+                ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(binding.recyclerViewItems)
             } else {
                 binding.buttonAddItem.visibility = View.GONE
             }
@@ -89,7 +89,7 @@ class DetailsShoppingList : Fragment(), DetailsRecyclerAdapter.AdapterListener {
         return binding.root
     }
 
-    override fun updateItemList(item: DetailsForm) {
+    override fun updateItemList(item: ItemForm) {
         viewModel.updateItemList(item)
     }
 

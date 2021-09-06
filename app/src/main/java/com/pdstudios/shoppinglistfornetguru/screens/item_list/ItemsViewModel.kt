@@ -1,29 +1,28 @@
-package com.pdstudios.shoppinglistfornetguru.screens.shopping_list_details
+package com.pdstudios.shoppinglistfornetguru.screens.item_list
 
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.*
 import com.pdstudios.shoppinglistfornetguru.database.ShoppingDatabase
-import com.pdstudios.shoppinglistfornetguru.database.details.DetailsDao
-import com.pdstudios.shoppinglistfornetguru.database.details.DetailsForm
+import com.pdstudios.shoppinglistfornetguru.database.item.ItemForm
 import com.pdstudios.shoppinglistfornetguru.database.shopping_list.ShoppingListsForm
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class DetailsViewModel(
+class ItemsViewModel(
     private val database: ShoppingDatabase,
     private val listID: Long,
     application: Application
 ): AndroidViewModel(application){
 
-    private val detailsDao = database.detailsDao
-    private val shoppingDao = database.shoppingListsDao
+    private val itemListDao = database.itemDao
+    private val shoppingListDao = database.shoppingListsDao
 
-    val itemList = detailsDao.getItemList(listID)
+    val itemList = itemListDao.getItemListFromShoppingList(listID)
 
     private var _shoppingList = MutableLiveData<ShoppingListsForm>()
-    val shoppingList: LiveData<ShoppingListsForm>
+    val shoppingLists: LiveData<ShoppingListsForm>
         get() = _shoppingList
 
     init {
@@ -34,38 +33,28 @@ class DetailsViewModel(
 
     private suspend fun getShoppingList(listID: Long): ShoppingListsForm {
         return withContext(Dispatchers.IO) {
-            shoppingDao.getShoppingList(listID)
+            shoppingListDao.get(listID)
         }
     }
-
-
-//    fun getShoppingList(): ShoppingListsForm {
-//        viewModelScope.launch {
-//            val list = withContext(Dispatchers.IO) {
-//                shoppingDao.getShoppingList(listID)
-//            }
-//            return list
-//        }
-//    }
-
+    
     fun onAddItem() {
         viewModelScope.launch {
-            val item = DetailsForm(listID = listID)
-            updateDetails(item)
+            val item = ItemForm(listID = listID)
+            updateItem(item)
         }
     }
 
-    private suspend fun updateDetails(item: DetailsForm) {
+    private suspend fun updateItem(item: ItemForm) {
         withContext(Dispatchers.IO) {
-            detailsDao.insertItem(item)
-            Log.i("test", "updateDetails Works")
+            itemListDao.insertItem(item)
+            Log.i("test", "updateItem Works")
         }
     }
 
-    fun updateItemList(item: DetailsForm) {
+    fun updateItemList(item: ItemForm) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                detailsDao.updateDetails(item)
+                itemListDao.update(item)
             }
         }
     }
@@ -73,7 +62,7 @@ class DetailsViewModel(
     fun delete(itemID: Long) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                detailsDao.deleteFromItemList(itemID)
+                itemListDao.delete(itemID)
             }
         }
     }

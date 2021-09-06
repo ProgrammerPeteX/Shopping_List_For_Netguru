@@ -2,10 +2,7 @@ package com.pdstudios.shoppinglistfornetguru.screens.current_shopping_lists
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.pdstudios.shoppinglistfornetguru.database.ShoppingDatabase
 import com.pdstudios.shoppinglistfornetguru.database.shopping_list.ShoppingListsDao
 import com.pdstudios.shoppinglistfornetguru.database.shopping_list.ShoppingListsForm
 import kotlinx.coroutines.Dispatchers
@@ -26,24 +23,16 @@ class CurrentViewModel(
         }
     }
 
-    private suspend fun insertShoppingList(shoppingList: ShoppingListsForm) {
+    private suspend fun insertShoppingList(shoppingLists: ShoppingListsForm) {
         withContext(Dispatchers.IO) {
-            shoppingListsDao.insertShoppingList(shoppingList)
-        }
-    }
-
-    fun onTestClick() {
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                shoppingListsDao.clearShoppingLists()
-            }
+            shoppingListsDao.insert(shoppingLists)
         }
     }
 
     fun deleteFromShoppingLists(listID: Long) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                shoppingListsDao.deleteFromShoppingLists(listID)
+                shoppingListsDao.delete(listID)
             }
         }
     }
@@ -51,7 +40,7 @@ class CurrentViewModel(
     fun updateShoppingLists(shoppingLists: ShoppingListsForm) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                shoppingListsDao.updateShoppingList(shoppingLists)
+                shoppingListsDao.update(shoppingLists)
             }
         }
     }

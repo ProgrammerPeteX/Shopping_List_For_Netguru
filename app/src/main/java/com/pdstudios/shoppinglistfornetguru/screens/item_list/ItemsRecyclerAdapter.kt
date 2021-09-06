@@ -1,4 +1,4 @@
-package com.pdstudios.shoppinglistfornetguru.screens.shopping_list_details
+package com.pdstudios.shoppinglistfornetguru.screens.item_list
 
 import android.text.InputType
 import android.util.Log
@@ -8,19 +8,19 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.RecyclerView
-import com.pdstudios.shoppinglistfornetguru.database.details.DetailsForm
+import com.pdstudios.shoppinglistfornetguru.database.item.ItemForm
 import com.pdstudios.shoppinglistfornetguru.database.shopping_list.ShoppingListsForm
-import com.pdstudios.shoppinglistfornetguru.databinding.DetailsCardBinding
+import com.pdstudios.shoppinglistfornetguru.databinding.ItemsCardBinding
 
 
-class DetailsRecyclerAdapter(
-    private var itemList: LiveData<List<DetailsForm>>,
-    private val shoppingList: LiveData<ShoppingListsForm>,
+class ItemsRecyclerAdapter(
+    private var itemList: LiveData<List<ItemForm>>,
+    private val shoppingLists: LiveData<ShoppingListsForm>,
     private val adapterListener: AdapterListener
 ):
-    RecyclerView.Adapter<DetailsRecyclerAdapter.ViewHolder>() {
+    RecyclerView.Adapter<ItemsRecyclerAdapter.ViewHolder>() {
 
-    private lateinit var binding: DetailsCardBinding
+    private lateinit var binding: ItemsCardBinding
     private var isLongClick = false
 
     override fun onCreateViewHolder(
@@ -28,7 +28,7 @@ class DetailsRecyclerAdapter(
         viewType: Int
     ): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        binding = DetailsCardBinding.inflate(inflater,parent,false)
+        binding = ItemsCardBinding.inflate(inflater,parent,false)
         return ViewHolder(binding.root)
     }
 
@@ -38,9 +38,9 @@ class DetailsRecyclerAdapter(
         holder.checkBox.isChecked = item.isChecked
 
         Log.i("test", "-\n" +
-                "name = ${shoppingList.value?.name}\n" +
-                "isArchived = ${shoppingList.value?.isArchived}\n")
-        if (shoppingList.value?.isArchived == false) {
+                "name = ${shoppingLists.value?.name}\n" +
+                "isArchived = ${shoppingLists.value?.isArchived}\n")
+        if (shoppingLists.value?.isArchived == false) {
             //checkbox
             if (!isLongClick) {
                 holder.cardView.setOnClickListener {
@@ -98,11 +98,11 @@ class DetailsRecyclerAdapter(
         RecyclerView.ViewHolder(itemView) {
         var itemName = binding.textViewItemName
         var editItemName = binding.editTextItemName
-        var cardView = binding.cardViewDetails
+        var cardView = binding.cardViewItems
         var checkBox = binding.checkBox
     }
 
     interface AdapterListener {
-        fun updateItemList(item: DetailsForm)
+        fun updateItemList(item: ItemForm)
     }
 }

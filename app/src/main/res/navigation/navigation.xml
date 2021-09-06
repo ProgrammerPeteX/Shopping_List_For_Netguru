@@ -14,8 +14,8 @@
             android:id="@+id/action_currentShoppingList_to_archivedShoppingList"
             app:destination="@id/archivedShoppingList" />
         <action
-            android:id="@+id/action_currentShoppingList_to_shoppingListDetails"
-            app:destination="@id/shoppingListDetails" />
+            android:id="@+id/action_currentShoppingList_to_shoppingListItems"
+            app:destination="@id/shoppingListItems" />
     </fragment>
     <fragment
         android:id="@+id/archivedShoppingList"
@@ -26,19 +26,19 @@
             android:id="@+id/action_archivedShoppingList_to_currentShoppingList"
             app:destination="@id/currentShoppingList" />
         <action
-            android:id="@+id/action_archivedShoppingList_to_shoppingListDetails"
-            app:destination="@id/shoppingListDetails" />
+            android:id="@+id/action_archivedShoppingList_to_shoppingListItems"
+            app:destination="@id/shoppingListItems" />
     </fragment>
     <fragment
-        android:id="@+id/shoppingListDetails"
-        android:name="com.pdstudios.shoppinglistfornetguru.screens.shopping_list_details.DetailsShoppingList"
-        android:label="ShoppingListDetails"
-        tools:layout="@layout/fragment_details_shopping_list">
+        android:id="@+id/shoppingListItems"
+        android:name="com.pdstudios.shoppinglistfornetguru.screens.item_list.ItemsShoppingList"
+        android:label="ShoppingListItems"
+        tools:layout="@layout/fragment_items_shopping_list">
         <action
-            android:id="@+id/action_shoppingListDetails_to_currentShoppingList"
+            android:id="@+id/action_shoppingListItems_to_currentShoppingList"
             app:destination="@id/currentShoppingList" />
         <action
-            android:id="@+id/action_shoppingListDetails_to_archivedShoppingList"
+            android:id="@+id/action_shoppingListItems_to_archivedShoppingList"
             app:destination="@id/archivedShoppingList" />
         <argument
             android:name="listID"

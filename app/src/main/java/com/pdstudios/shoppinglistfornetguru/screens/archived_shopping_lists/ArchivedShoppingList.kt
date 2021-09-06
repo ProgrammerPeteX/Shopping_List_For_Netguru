@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.pdstudios.shoppinglistfornetguru.R
 import com.pdstudios.shoppinglistfornetguru.database.ShoppingDatabase
-import com.pdstudios.shoppinglistfornetguru.database.shopping_list.ShoppingListsForm
 import com.pdstudios.shoppinglistfornetguru.databinding.FragmentArchivedShoppingListBinding
 
 
@@ -34,10 +33,10 @@ class ArchivedShoppingList : Fragment() {
 
         //database
         val application = requireNotNull(this.activity).application
-        val shoppingListsDao = ShoppingDatabase.getInstance(application).shoppingListsDao
+        val shoppingListDao = ShoppingDatabase.getInstance(application).shoppingListsDao
 
         //viewModel
-        val factory = ArchivedViewModelFactory(shoppingListsDao, application)
+        val factory = ArchivedViewModelFactory(shoppingListDao, application)
         viewModel = ViewModelProvider(this, factory).get(ArchivedViewModel::class.java)
         binding.archivedViewModel = viewModel
         binding.lifecycleOwner = this
@@ -82,6 +81,8 @@ class ArchivedShoppingList : Fragment() {
                     }
                 }
             }
+
+
 
         ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(binding.recyclerViewArchived)
 
