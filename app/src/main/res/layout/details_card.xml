@@ -73,6 +73,7 @@
                 android:minWidth="0dp"
                 android:minHeight="0dp"
                 android:paddingHorizontal="5sp"
+                android:buttonTint="#3AACAC"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />

@@ -1,7 +1,5 @@
 package com.pdstudios.shoppinglistfornetguru.screens.archived_shopping_lists
 
-import android.text.InputType
-import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,7 +8,6 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.pdstudios.shoppinglistfornetguru.database.shopping_list.ShoppingListsForm
 import com.pdstudios.shoppinglistfornetguru.databinding.ShoppingListCardBinding
-import com.pdstudios.shoppinglistfornetguru.screens.current_shopping_lists.CurrentShoppingListDirections
 
 class ArchivedRecyclerAdapter(
     private var list: LiveData<List<ShoppingListsForm>>
@@ -29,10 +26,11 @@ class ArchivedRecyclerAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.shoppingListName.text = list.value!![position].name
+        val item = list.value!![position]
+        holder.shoppingListName.text = item.name
 
         holder.cardView.setOnClickListener { view ->
-            if (!isLongClick) navigateToDetails(view)
+            if (!isLongClick) navigateToDetails(view, item.listID)
         }
     }
 
@@ -46,10 +44,10 @@ class ArchivedRecyclerAdapter(
         var cardView = binding.cardView
     }
 
-    private fun navigateToDetails(view: View) {
+    private fun navigateToDetails(view: View, listID: Long) {
         view.findNavController().navigate(
             ArchivedShoppingListDirections
-            .actionArchivedShoppingListToShoppingListDetails())
+            .actionArchivedShoppingListToShoppingListDetails(listID))
     }
 }
 

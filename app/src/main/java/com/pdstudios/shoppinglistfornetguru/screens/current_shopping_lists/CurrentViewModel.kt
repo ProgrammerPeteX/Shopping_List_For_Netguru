@@ -6,17 +6,16 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.pdstudios.shoppinglistfornetguru.database.ShoppingDatabase
+import com.pdstudios.shoppinglistfornetguru.database.shopping_list.ShoppingListsDao
 import com.pdstudios.shoppinglistfornetguru.database.shopping_list.ShoppingListsForm
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class CurrentViewModel(
-    shoppingDatabase: ShoppingDatabase,
+    private val shoppingListsDao: ShoppingListsDao,
     application: Application)
     : AndroidViewModel(application) {
-
-    private val shoppingListsDao = shoppingDatabase.shoppingListsDao
 
     val shoppingLists = shoppingListsDao.getCurrentShoppingLists()
 
@@ -51,14 +50,9 @@ class CurrentViewModel(
 
     fun updateShoppingLists(shoppingLists: ShoppingListsForm) {
         viewModelScope.launch {
-            updateShoppingListsSuspend(shoppingLists)
+            withContext(Dispatchers.IO) {
+                shoppingListsDao.updateShoppingList(shoppingLists)
+            }
         }
     }
-
-    private suspend fun updateShoppingListsSuspend(shoppingLists: ShoppingListsForm) {
-        withContext(Dispatchers.IO) {
-            shoppingListsDao.updateShoppingList(shoppingLists)
-        }
-    }
-
 }

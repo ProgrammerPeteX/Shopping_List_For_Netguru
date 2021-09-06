@@ -11,7 +11,7 @@ import com.pdstudios.shoppinglistfornetguru.database.shopping_list.ShoppingLists
 
 @Database(entities =
 [ShoppingListsForm::class, DetailsForm::class],
-    version = 1, exportSchema = false)
+    version = 2, exportSchema = false)
 
 abstract class ShoppingDatabase: RoomDatabase() {
 

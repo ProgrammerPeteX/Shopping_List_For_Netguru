@@ -16,14 +16,17 @@ interface DetailsDao {
     fun updateDetails(details: DetailsForm)
 
     @Query("SELECT * FROM details_table WHERE itemID =:itemID")
-    fun getDetails(itemID: Long): DetailsForm
+    fun getItem(itemID: Long): DetailsForm
 
     @Query("SELECT * FROM details_table ORDER BY itemID")
-    fun getDetailsList(): LiveData<MutableList<DetailsForm>>
+    fun getAllItems(): LiveData<List<DetailsForm>>
+
+    @Query("SELECT * FROM details_table WHERE listID =:listID ORDER BY itemID")
+    fun getItemList(listID: Long): LiveData<List<DetailsForm>>
 
     @Query("DELETE FROM details_table WHERE itemID =:itemID")
-    fun deleteFromDetailsList(itemID: Long)
+    fun deleteFromItemList(itemID: Long)
 
     @Query("DELETE FROM details_table")
-    fun clearDetailsList()
+    fun clearItemList()
 }

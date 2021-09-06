@@ -40,5 +40,8 @@
         <action
             android:id="@+id/action_shoppingListDetails_to_archivedShoppingList"
             app:destination="@id/archivedShoppingList" />
+        <argument
+            android:name="listID"
+            app:argType="long" />
     </fragment>
 </navigation>

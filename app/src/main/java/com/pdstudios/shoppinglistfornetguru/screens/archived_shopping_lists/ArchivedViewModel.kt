@@ -25,13 +25,9 @@ class ArchivedViewModel(
 
     fun updateShoppingLists(shoppingLists: ShoppingListsForm) {
         viewModelScope.launch {
-            updateShoppingListsSuspend(shoppingLists)
-        }
-    }
-
-    private suspend fun updateShoppingListsSuspend(shoppingLists: ShoppingListsForm) {
-        withContext(Dispatchers.IO) {
-            shoppingListsDao.updateShoppingList(shoppingLists)
+            withContext(Dispatchers.IO) {
+                shoppingListsDao.updateShoppingList(shoppingLists)
+            }
         }
     }
 }

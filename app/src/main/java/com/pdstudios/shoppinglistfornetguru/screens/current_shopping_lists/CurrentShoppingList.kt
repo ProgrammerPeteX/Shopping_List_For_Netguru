@@ -1,7 +1,6 @@
 package com.pdstudios.shoppinglistfornetguru.screens.current_shopping_lists
 
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -34,10 +33,10 @@ class CurrentShoppingList : Fragment(), CurrentRecyclerAdapter.AdapterListener {
 
         //database
         val application = requireNotNull(this.activity).application
-        val shoppingDatabase = ShoppingDatabase.getInstance(application)
+        val shoppingListsDao = ShoppingDatabase.getInstance(application).shoppingListsDao
 
         //viewModel
-        val factory = CurrentViewModelFactory(shoppingDatabase, application )
+        val factory = CurrentViewModelFactory(shoppingListsDao, application )
         viewModel = ViewModelProvider(this, factory).get(CurrentViewModel::class.java)
         binding.currentViewModel = viewModel
         binding.lifecycleOwner = this
