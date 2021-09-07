@@ -12,10 +12,16 @@
         tools:layout="@layout/fragment_current_shopping_list">
         <action
             android:id="@+id/action_currentShoppingList_to_archivedShoppingList"
-            app:destination="@id/archivedShoppingList" />
+            app:destination="@id/archivedShoppingList"
+            app:enterAnim="@anim/fade_out"
+            app:exitAnim="@anim/fade_in" />
         <action
             android:id="@+id/action_currentShoppingList_to_shoppingListItems"
-            app:destination="@id/shoppingListItems" />
+            app:destination="@id/shoppingListItems"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/archivedShoppingList"
@@ -24,22 +30,22 @@
         tools:layout="@layout/fragment_archived_shopping_list">
         <action
             android:id="@+id/action_archivedShoppingList_to_currentShoppingList"
-            app:destination="@id/currentShoppingList" />
+            app:destination="@id/currentShoppingList"
+            app:enterAnim="@anim/fade_out"
+            app:exitAnim="@anim/fade_in" />
         <action
             android:id="@+id/action_archivedShoppingList_to_shoppingListItems"
-            app:destination="@id/shoppingListItems" />
+            app:destination="@id/shoppingListItems"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/shoppingListItems"
         android:name="com.pdstudios.shoppinglistfornetguru.screens.item_list.ItemsShoppingList"
         android:label="huh?"
         tools:layout="@layout/fragment_items_shopping_list">
-        <action
-            android:id="@+id/action_shoppingListItems_to_currentShoppingList"
-            app:destination="@id/currentShoppingList" />
-        <action
-            android:id="@+id/action_shoppingListItems_to_archivedShoppingList"
-            app:destination="@id/archivedShoppingList" />
         <argument
             android:name="listID"
             app:argType="long" />
