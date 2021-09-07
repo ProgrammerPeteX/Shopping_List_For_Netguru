@@ -1,10 +1,12 @@
 package com.pdstudios.shoppinglistfornetguru.screens.item_list
 
+import android.content.Context
 import android.text.InputType
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.RecyclerView
 import com.pdstudios.shoppinglistfornetguru.database.item.ItemForm
@@ -35,6 +37,8 @@ class ItemsRecyclerAdapter(
         val item = itemList.value!![position]
         holder.itemName.text = item.name
         holder.checkBox.isChecked = item.isChecked
+        val inputManager: InputMethodManager =
+            holder.itemView.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
 
         if (shoppingLists.value?.isArchived == false) {
             //checkbox
@@ -62,6 +66,8 @@ class ItemsRecyclerAdapter(
                 holder.editItemName.visibility = View.VISIBLE
                 holder.itemName.inputType = InputType.TYPE_CLASS_TEXT
                 holder.editItemName.setText(item.name)
+                holder.editItemName.requestFocus()
+                inputManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
                 true
             }
 
@@ -76,6 +82,7 @@ class ItemsRecyclerAdapter(
                     holder.itemName.visibility = View.VISIBLE
                     item.name = holder.editItemName.text.toString()
                     adapterListener.updateItemList(item)
+                    inputManager.toggleSoftInput(InputMethodManager.HIDE_NOT_ALWAYS, 0)
                     bool = true
                 }
                 bool

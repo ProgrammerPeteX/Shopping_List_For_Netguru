@@ -1,10 +1,13 @@
 package com.pdstudios.shoppinglistfornetguru.screens.current_shopping_lists
 
+import android.content.Context
 import android.text.InputType
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
+import android.widget.LinearLayout
 import androidx.lifecycle.LiveData
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
@@ -29,19 +32,23 @@ open class CurrentRecyclerAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = lists.value!![position]
-        holder.shoppingListName.text = item.name
+        val shoppingList = lists.value!![position]
+        holder.shoppingListName.text = shoppingList.name
+        val inputManager: InputMethodManager =
+            holder.itemView.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
 
         holder.cardView.setOnClickListener { view ->
-            if (!isLongClick) navigateToItems(view, item.listID, item.name)
+            if (!isLongClick) navigateToItems(view, shoppingList.listID, shoppingList.name)
         }
 
-        holder.cardView.setOnLongClickListener {
+        holder.cardView.setOnLongClickListener { view ->
             isLongClick = true
             holder.shoppingListName.visibility = View.GONE
             holder.editShoppingListName.visibility = View.VISIBLE
             holder.shoppingListName.inputType = InputType.TYPE_CLASS_TEXT
-            holder.editShoppingListName.setText(lists.value!![position].name)
+            holder.editShoppingListName.setText(shoppingList.name)
+            holder.editShoppingListName.requestFocus()
+            inputManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
             true
         }
 
@@ -53,8 +60,9 @@ open class CurrentRecyclerAdapter(
                 isLongClick = false
                 holder.editShoppingListName.visibility = View.GONE
                 holder.shoppingListName.visibility = View.VISIBLE
-                item.name = holder.editShoppingListName.text.toString()
-                adapterListener.updateShoppingLists(item)
+                shoppingList.name = holder.editShoppingListName.text.toString()
+                adapterListener.updateShoppingLists(shoppingList)
+                inputManager.toggleSoftInput(InputMethodManager.HIDE_NOT_ALWAYS, 0)
                 bool = true
             }
             bool

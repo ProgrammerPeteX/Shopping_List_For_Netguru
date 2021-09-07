@@ -1,8 +1,10 @@
 package com.pdstudios.shoppinglistfornetguru.screens.archived_shopping_lists
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import androidx.lifecycle.LiveData
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
@@ -26,11 +28,11 @@ class ArchivedRecyclerAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = lists.value!![position]
-        holder.shoppingListName.text = item.name
+        val shoppingList = lists.value!![position]
+        holder.shoppingListName.text = shoppingList.name
 
         holder.cardView.setOnClickListener { view ->
-            if (!isLongClick) navigateToItems(view, item.listID, item.name)
+            if (!isLongClick) navigateToItems(view, shoppingList.listID, shoppingList.name)
         }
     }
 
