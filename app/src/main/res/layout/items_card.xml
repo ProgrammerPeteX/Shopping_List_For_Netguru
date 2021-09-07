@@ -32,7 +32,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.0"
-                app:srcCompat="@android:drawable/btn_star_big_on" />
+                app:srcCompat="@drawable/round_shopping_basket_24" />
 
             <TextView
                 android:id="@+id/textView_itemName"

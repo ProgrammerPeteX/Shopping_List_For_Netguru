@@ -54,7 +54,7 @@ open class CurrentRecyclerAdapter(
                 holder.editShoppingListName.visibility = View.GONE
                 holder.shoppingListName.visibility = View.VISIBLE
                 item.name = holder.editShoppingListName.text.toString()
-                adapterListener.updateShoppingList(item)
+                adapterListener.updateShoppingLists(item)
                 bool = true
             }
             bool
@@ -78,6 +78,6 @@ open class CurrentRecyclerAdapter(
     }
 
     interface AdapterListener {
-        fun updateShoppingList(shoppingLists: ShoppingListsForm)
+        fun updateShoppingLists(shoppingLists: ShoppingListsForm)
     }
 }

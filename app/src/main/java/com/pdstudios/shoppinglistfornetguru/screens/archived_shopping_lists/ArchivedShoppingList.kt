@@ -2,6 +2,7 @@ package com.pdstudios.shoppinglistfornetguru.screens.archived_shopping_lists
 
 import android.os.Bundle
 import android.view.*
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
@@ -14,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.pdstudios.shoppinglistfornetguru.R
 import com.pdstudios.shoppinglistfornetguru.SharedViewModel
+import com.pdstudios.shoppinglistfornetguru.SwipeGesture
 import com.pdstudios.shoppinglistfornetguru.database.ShoppingDatabase
 import com.pdstudios.shoppinglistfornetguru.databinding.FragmentArchivedShoppingListBinding
 
@@ -62,38 +64,28 @@ class ArchivedShoppingList : Fragment() {
         viewModel.shoppingLists.observe(viewLifecycleOwner) {
             adapter.notifyDataSetChanged()
         }
-
-        val itemTouchHelperCallback =
-            object :
-                ItemTouchHelper.SimpleCallback(0, LEFT or RIGHT) {
-                override fun onMove(
-                    recyclerView: RecyclerView,
-                    viewHolder: RecyclerView.ViewHolder,
-                    target: RecyclerView.ViewHolder
-                ): Boolean {
-
-                    return false
-                }
-
-                override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                    val shoppingList = viewModel.shoppingLists.value!![viewHolder.adapterPosition]
-                    when (direction) {
-                        LEFT -> {//DELETE
-                            viewModel.deleteFromShoppingLists(shoppingList.listID)
-                            adapter.notifyDataSetChanged()}
-                        RIGHT -> {//NOT ARCHIVED
-                            shoppingList.isArchived = false
-                            viewModel.updateShoppingLists(shoppingList)
-                            adapter.notifyDataSetChanged()
-                        }
-
+        val swipeLeftIcon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_baseline_delete_24)!!
+        val swipeRightIcon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_baseline_unarchive_24)!!
+        val swipeDir = LEFT or RIGHT
+        val swipeGesture = object : SwipeGesture(swipeLeftIcon, swipeRightIcon, swipeDir) {
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val shoppingList = viewModel.shoppingLists.value!![viewHolder.adapterPosition]
+                when(direction) {
+                    LEFT -> {
+                        viewModel.deleteFromShoppingLists(shoppingList.listID)
+                        adapter.notifyDataSetChanged()
                     }
+                    RIGHT -> {
+                        shoppingList.isArchived = false
+                        viewModel.updateShoppingLists(shoppingList)
+                        adapter.notifyDataSetChanged()
+                    }
+                    else -> {}
                 }
             }
+        }
 
-
-
-        ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(binding.recyclerViewArchived)
+        ItemTouchHelper(swipeGesture).attachToRecyclerView(binding.recyclerViewArchived)
 
         return binding.root
     }

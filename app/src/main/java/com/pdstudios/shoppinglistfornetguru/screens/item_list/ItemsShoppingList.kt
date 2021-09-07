@@ -5,14 +5,18 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.ItemTouchHelper.LEFT
+import androidx.recyclerview.widget.ItemTouchHelper.RIGHT
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.pdstudios.shoppinglistfornetguru.R
 import com.pdstudios.shoppinglistfornetguru.SharedViewModel
+import com.pdstudios.shoppinglistfornetguru.SwipeGesture
 import com.pdstudios.shoppinglistfornetguru.database.ShoppingDatabase
 import com.pdstudios.shoppinglistfornetguru.database.item.ItemForm
 import com.pdstudios.shoppinglistfornetguru.databinding.FragmentItemsShoppingListBinding
@@ -62,30 +66,24 @@ class ItemsShoppingList : Fragment(), ItemsRecyclerAdapter.AdapterListener {
         viewModel.shoppingList.observe(viewLifecycleOwner) { list ->
             adapter.notifyDataSetChanged()
             if (!list.isArchived) {
-                val itemTouchHelperCallback =
-                    object :
-                        ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
-                        override fun onMove(
-                            recyclerView: RecyclerView,
-                            viewHolder: RecyclerView.ViewHolder,
-                            target: RecyclerView.ViewHolder
-                        ): Boolean {
-                            return false
-                        }
-
-                        override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                            when (direction) {
-                                ItemTouchHelper.LEFT -> {//DELETE
-                                    val itemID =
-                                        viewModel.itemList.value!![viewHolder.adapterPosition].itemID
-                                    viewModel.delete(itemID)
-                                    adapter.notifyDataSetChanged()
-                                }
+                val swipeLeftIcon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_baseline_delete_24)!!
+                val swipeRightIcon = null
+                val swipeDir = LEFT
+                val swipeGesture = object : SwipeGesture(swipeLeftIcon, swipeRightIcon, swipeDir) {
+                    override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                        val item = viewModel.itemList.value!![viewHolder.adapterPosition]
+                        when(direction) {
+                            LEFT -> {
+                                viewModel.delete(item.itemID)
+                                adapter.notifyDataSetChanged()
                             }
+                            RIGHT -> {}
+                            else -> {}
                         }
                     }
+                }
 
-                ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(binding.recyclerViewItems)
+                ItemTouchHelper(swipeGesture).attachToRecyclerView(binding.recyclerViewItems)
             } else {
                 binding.buttonAddItem.visibility = View.GONE
             }

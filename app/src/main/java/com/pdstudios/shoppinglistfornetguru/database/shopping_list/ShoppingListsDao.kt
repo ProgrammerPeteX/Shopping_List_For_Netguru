@@ -17,6 +17,9 @@ interface ShoppingListsDao {
     @Query("SELECT * FROM shopping_lists_table WHERE listID =:listID")
     fun get(listID: Long): ShoppingListsForm
 
+    @Query("SELECT * FROM shopping_lists_table ORDER BY listID DESC LIMIT 1")
+    fun getLast(): ShoppingListsForm
+
     @Query("SELECT * FROM shopping_lists_table ORDER BY listID")
     fun getAll(): LiveData<List<ShoppingListsForm>>
 
