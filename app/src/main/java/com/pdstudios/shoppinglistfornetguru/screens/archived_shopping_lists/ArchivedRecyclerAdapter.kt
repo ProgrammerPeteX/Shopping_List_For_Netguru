@@ -30,7 +30,7 @@ class ArchivedRecyclerAdapter(
         holder.shoppingListName.text = item.name
 
         holder.cardView.setOnClickListener { view ->
-            if (!isLongClick) navigateToItems(view, item.listID)
+            if (!isLongClick) navigateToItems(view, item.listID, item.name)
         }
     }
 
@@ -44,10 +44,10 @@ class ArchivedRecyclerAdapter(
         var cardView = binding.cardView
     }
 
-    private fun navigateToItems(view: View, listID: Long) {
+    private fun navigateToItems(view: View, listID: Long, listName: String) {
         view.findNavController().navigate(
             ArchivedShoppingListDirections
-            .actionArchivedShoppingListToShoppingListItems(listID))
+            .actionArchivedShoppingListToShoppingListItems(listID, listName))
     }
 }
 

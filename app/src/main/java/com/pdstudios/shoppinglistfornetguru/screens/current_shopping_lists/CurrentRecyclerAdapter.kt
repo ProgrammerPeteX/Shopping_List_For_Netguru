@@ -33,7 +33,7 @@ open class CurrentRecyclerAdapter(
         holder.shoppingListName.text = item.name
 
         holder.cardView.setOnClickListener { view ->
-            if (!isLongClick) navigateToItems(view, item.listID)
+            if (!isLongClick) navigateToItems(view, item.listID, item.name)
         }
 
         holder.cardView.setOnLongClickListener {
@@ -72,9 +72,9 @@ open class CurrentRecyclerAdapter(
             var cardView = binding.cardView
         }
 
-    private fun navigateToItems(view: View, listID: Long) {
+    private fun navigateToItems(view: View, listID: Long, listName: String) {
         view.findNavController().navigate(CurrentShoppingListDirections
-            .actionCurrentShoppingListToShoppingListItems(listID))
+            .actionCurrentShoppingListToShoppingListItems(listID, listName))
     }
 
     interface AdapterListener {

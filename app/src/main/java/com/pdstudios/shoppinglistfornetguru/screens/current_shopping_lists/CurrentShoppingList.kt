@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.*
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -11,6 +12,7 @@ import androidx.recyclerview.widget.ItemTouchHelper.LEFT
 import androidx.recyclerview.widget.ItemTouchHelper.RIGHT
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.pdstudios.shoppinglistfornetguru.SharedViewModel
 import com.pdstudios.shoppinglistfornetguru.R
 import com.pdstudios.shoppinglistfornetguru.database.ShoppingDatabase
 import com.pdstudios.shoppinglistfornetguru.database.shopping_list.ShoppingListsForm
@@ -19,6 +21,8 @@ import com.pdstudios.shoppinglistfornetguru.databinding.FragmentCurrentShoppingL
 class CurrentShoppingList : Fragment(), CurrentRecyclerAdapter.AdapterListener {
 
     private lateinit var binding: FragmentCurrentShoppingListBinding
+
+    private val sharedViewModel: SharedViewModel by activityViewModels()
     private lateinit var viewModel: CurrentViewModel
 
     private lateinit var layoutManager: RecyclerView.LayoutManager
@@ -27,6 +31,10 @@ class CurrentShoppingList : Fragment(), CurrentRecyclerAdapter.AdapterListener {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?): View {
+
+        //setTitle
+        sharedViewModel.actionBarTitle.value = "Shopping List - Current"
+
         //binding
         binding = DataBindingUtil.inflate(
             inflater,R.layout.fragment_current_shopping_list,container,false)
@@ -41,7 +49,6 @@ class CurrentShoppingList : Fragment(), CurrentRecyclerAdapter.AdapterListener {
         binding.currentViewModel = viewModel
         binding.lifecycleOwner = this
 
-
         //menu
         setHasOptionsMenu(true)
 
@@ -53,7 +60,6 @@ class CurrentShoppingList : Fragment(), CurrentRecyclerAdapter.AdapterListener {
 
         viewModel.shoppingLists.observe(viewLifecycleOwner) {
             adapter.notifyDataSetChanged()
-//            Log.i("test", "hi, this is the  shoppingLists Observer :)")
         }
 
         val itemTouchHelperCallback =

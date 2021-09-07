@@ -1,7 +1,6 @@
 package com.pdstudios.shoppinglistfornetguru.screens.item_list
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.*
 import com.pdstudios.shoppinglistfornetguru.database.ShoppingDatabase
 import com.pdstudios.shoppinglistfornetguru.database.item.ItemForm
@@ -15,14 +14,13 @@ class ItemsViewModel(
     private val listID: Long,
     application: Application
 ): AndroidViewModel(application){
-
     private val itemListDao = database.itemDao
     private val shoppingListDao = database.shoppingListsDao
 
     val itemList = itemListDao.getItemListFromShoppingList(listID)
 
     private var _shoppingList = MutableLiveData<ShoppingListsForm>()
-    val shoppingLists: LiveData<ShoppingListsForm>
+    val shoppingList: LiveData<ShoppingListsForm>
         get() = _shoppingList
 
     init {
@@ -47,7 +45,6 @@ class ItemsViewModel(
     private suspend fun updateItem(item: ItemForm) {
         withContext(Dispatchers.IO) {
             itemListDao.insertItem(item)
-            Log.i("test", "updateItem Works")
         }
     }
 

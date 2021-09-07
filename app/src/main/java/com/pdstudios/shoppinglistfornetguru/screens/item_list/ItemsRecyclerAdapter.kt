@@ -1,7 +1,6 @@
 package com.pdstudios.shoppinglistfornetguru.screens.item_list
 
 import android.text.InputType
-import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -37,9 +36,6 @@ class ItemsRecyclerAdapter(
         holder.itemName.text = item.name
         holder.checkBox.isChecked = item.isChecked
 
-        Log.i("test", "-\n" +
-                "name = ${shoppingLists.value?.name}\n" +
-                "isArchived = ${shoppingLists.value?.isArchived}\n")
         if (shoppingLists.value?.isArchived == false) {
             //checkbox
             if (!isLongClick) {

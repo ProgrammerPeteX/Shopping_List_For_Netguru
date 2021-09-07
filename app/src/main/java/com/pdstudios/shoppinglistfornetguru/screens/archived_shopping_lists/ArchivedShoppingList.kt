@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.ItemTouchHelper.RIGHT
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.pdstudios.shoppinglistfornetguru.R
+import com.pdstudios.shoppinglistfornetguru.SharedViewModel
 import com.pdstudios.shoppinglistfornetguru.database.ShoppingDatabase
 import com.pdstudios.shoppinglistfornetguru.databinding.FragmentArchivedShoppingListBinding
 
@@ -19,7 +21,10 @@ import com.pdstudios.shoppinglistfornetguru.databinding.FragmentArchivedShopping
 class ArchivedShoppingList : Fragment() {
 
     private lateinit var binding: FragmentArchivedShoppingListBinding
+
+    private val sharedViewModel: SharedViewModel by activityViewModels()
     private lateinit var viewModel: ArchivedViewModel
+
     private lateinit var layoutManager: RecyclerView.LayoutManager
     private lateinit var adapter: RecyclerView.Adapter<ArchivedRecyclerAdapter.ViewHolder>
 
@@ -27,6 +32,10 @@ class ArchivedShoppingList : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
+        //setTitle
+        sharedViewModel.actionBarTitle.value = "Shopping List - Archived"
+
         //binding
         binding = DataBindingUtil.inflate(
             inflater,R.layout.fragment_archived_shopping_list, container, false)

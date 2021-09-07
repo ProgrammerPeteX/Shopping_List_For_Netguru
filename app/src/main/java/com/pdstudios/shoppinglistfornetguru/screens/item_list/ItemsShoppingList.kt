@@ -6,11 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.pdstudios.shoppinglistfornetguru.R
+import com.pdstudios.shoppinglistfornetguru.SharedViewModel
 import com.pdstudios.shoppinglistfornetguru.database.ShoppingDatabase
 import com.pdstudios.shoppinglistfornetguru.database.item.ItemForm
 import com.pdstudios.shoppinglistfornetguru.databinding.FragmentItemsShoppingListBinding
@@ -18,7 +20,10 @@ import com.pdstudios.shoppinglistfornetguru.databinding.FragmentItemsShoppingLis
 class ItemsShoppingList : Fragment(), ItemsRecyclerAdapter.AdapterListener {
 
     private lateinit var binding: FragmentItemsShoppingListBinding
+
+    private val sharedViewModel: SharedViewModel by activityViewModels()
     private lateinit var viewModel: ItemsViewModel
+
     private lateinit var layoutManager: RecyclerView.LayoutManager
     private lateinit var adapter: RecyclerView.Adapter<ItemsRecyclerAdapter.ViewHolder>
 
@@ -26,12 +31,16 @@ class ItemsShoppingList : Fragment(), ItemsRecyclerAdapter.AdapterListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
+        //args
+        val args = ItemsShoppingListArgs.fromBundle(requireArguments())
+
+        //setTitle
+        sharedViewModel.actionBarTitle.value = args.listName
+
         //binging
         binding = DataBindingUtil.inflate(
             inflater, R.layout.fragment_items_shopping_list, container, false)
-
-        //args
-        var args = ItemsShoppingListArgs.fromBundle(requireArguments())
 
         //database
         val application = requireNotNull(this.activity).application
@@ -44,13 +53,13 @@ class ItemsShoppingList : Fragment(), ItemsRecyclerAdapter.AdapterListener {
         binding.lifecycleOwner = this
 
         //recyclerView
-        val shoppingList = viewModel.shoppingLists
+        val shoppingList = viewModel.shoppingList
         layoutManager = LinearLayoutManager(this.context)
         binding.recyclerViewItems.layoutManager = layoutManager
         adapter = ItemsRecyclerAdapter(viewModel.itemList, shoppingList, this)
         binding.recyclerViewItems.adapter = adapter
 
-        viewModel.shoppingLists.observe(viewLifecycleOwner) { list ->
+        viewModel.shoppingList.observe(viewLifecycleOwner) { list ->
             adapter.notifyDataSetChanged()
             if (!list.isArchived) {
                 val itemTouchHelperCallback =
